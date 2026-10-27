@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora y Solucionario de Integración Numérica - Desafío La Paz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre, .font-mono { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
+        
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid font-mono">&int;</i>
+                </div>
+                <div >
+                    <h1 class="font-bold text-lg leading-tight text-slate-900 dark:text-white">Desafío Integración Numérica</h1>
+                    
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Métodos Numéricos · La Paz, Bolivia</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-medium">
+                <a href="#contexto" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Contexto</a>
+                <a href="#validacion" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Prueba $f(x)=x^2$</a>
+                <a href="#ejercicios" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Ejercicios (19-27)</a>
+                <a href="#calculadora" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Calculadora Libre</a>
+                <a href="#informe" class="px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Informe Técnico</a>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <!-- Dark Mode Toggle Button -->
+                <button id="themeToggle" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Cambiar Tema">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+        <section class="bg-gradient-to-br">
+            <p>Integrante:</p>
+            <p>CUENTAS APAZA JHAREN ANDRES</p>
+            <p>LUNA ROJAS JAVIER</p>
+            <p>QUISPE ESPINAL CRISTIAN ALEXANDER</p>
+        </section>
+        <!-- 1. CONTEXTO & GUÍA GENERAL -->
+        <section id="contexto" class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-4xl space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-graduation-cap"></i> Guía Docente & Solucionario Interactivo
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                    Desafío Grupal de Métodos Numéricos
+                </h2>
+                <p class="text-indigo-100/90 text-sm sm:text-base leading-relaxed">
+                    Aplicación interactiva y solucionario oficial para resolver problemas reales e ingeneriles (transporte, hidrología, estructuras, energía) adaptados al contexto didáctico de La Paz, Bolivia. Implementa los algoritmos del <strong>Trapecio Compuesto</strong>, <strong>Simpson 1/3</strong> y <strong>Simpson 3/8</strong> con validación rigurosa de restricciones de subintervalos ($n$).
+                </p>
+
+                <!-- Formulas Quick Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                        <span class="text-xs font-bold text-indigo-300 uppercase block mb-1">Trapecio Compuesto</span>
+                        <code class="text-xs text-white block bg-slate-950/40 p-2 rounded border border-white/5 overflow-x-auto">
+                            T = (h/2)[f₀ + fₙ + 2&sum;fᵢ]
+                        </code>
+                        <p class="text-[11px] text-indigo-200/80 mt-2">Valido para cualquier $n \ge 1$. Espaciamiento constante $h = (b-a)/n$.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                        <span class="text-xs font-bold text-indigo-300 uppercase block mb-1">Simpson 1/3</span>
+                        <code class="text-xs text-white block bg-slate-950/40 p-2 rounded border border-white/5 overflow-x-auto">
+                            S₁/₃ = (h/3)[f₀ + fₙ + 4&sum;fₒ₤ₚ + 2&sum;fₚₐᵣ]
+                        </code>
+                        <p class="text-[11px] text-indigo-200/80 mt-2"><strong class="text-amber-300">Requisito obligatorio:</strong> $n$ debe ser un número PAR.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                        <span class="text-xs font-bold text-indigo-300 uppercase block mb-1">Simpson 3/8</span>
+                        <code class="text-xs text-white block bg-slate-950/40 p-2 rounded border border-white/5 overflow-x-auto">
+                            S₃/₈ = (3h/8)[f₀ + fₙ + 3&sum;fₙₒ₃ₖ + 2&sum;f₃ₖ]
+                        </code>
+                        <p class="text-[11px] text-indigo-200/80 mt-2"><strong class="text-amber-300">Requisito obligatorio:</strong> $n$ debe ser MÚLTIPLO DE 3.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PRUEBA DE VALIDACIÓN OBLIGATORIA (f(x) = x^2) -->
+        <section id="validacion" class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-700 pb-4">
+                <div>
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-xs font-semibold mb-1">
+                        <i class="fa-solid fa-vial"></i> Requisito del Documento
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Prueba de Validación Estándar</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Verificación del algoritmo con $f(x) = x^2$ en el intervalo $[0, 2]$. Valor Exacto: $\int_0^2 x^2 dx = \frac{8}{3} = 2.666667...$</p>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/50 p-1 rounded-xl">
+                    <button onclick="setValidationN(4)" id="valBtn4" class="px-4 py-1.5 rounded-lg text-xs font-semibold transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm">n = 4</button>
+                    <button onclick="setValidationN(8)" id="valBtn8" class="px-4 py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">n = 8</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Validation Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="validationResultsGrid">
+                <!-- Rendered dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- 3. SOLUCIONARIO INTERACTIVO DE LOS 9 EJERCICIOS -->
+        <section id="ejercicios" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Módulos Específicos</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Ejercicios del Desafío (19 al 27)</h2>
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Seleccione un ejercicio para modificar datos, ejecutar integraciones y visualizar gráficos.</p>
+                </div>
+            </div>
+
+            <!-- Exercise Navigation Tabs -->
+            <div class="flex overflow-x-auto space-x-2 pb-2 border-b border-slate-200 dark:border-slate-700 no-scrollbar">
+                <button onclick="switchExTab(19)" id="exTab19" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-indigo-600 text-white shadow-md shadow-indigo-500/20">Ej 19: Vehículo</button>
+                <button onclick="switchExTab(20)" id="exTab20" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 20: Banda Elástica</button>
+                <button onclick="switchExTab(21)" id="exTab21" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 21: Perfil Topográfico</button>
+                <button onclick="switchExTab(22)" id="exTab22" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 22: Cable Catenaria</button>
+                <button onclick="switchExTab(23)" id="exTab23" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 23: Caudal Agua</button>
+                <button onclick="switchExTab(24)" id="exTab24" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 24: Cardioide Paramétrica</button>
+                <button onclick="switchExTab(25)" id="exTab25" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 25: Energía Satélite</button>
+                <button onclick="switchExTab(26)" id="exTab26" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 26: Superficie Lago</button>
+                <button onclick="switchExTab(27)" id="exTab27" class="ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">Ej 27: Volumen Balón</button>
+            </div>
+
+            <!-- Exercise Interactive Panel Container -->
+            <div id="exercisePanel" class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm min-h-[450px]">
+                <!-- Content generated dynamically via JavaScript -->
+            </div>
+        </section>
+
+        <!-- 4. CALCULADORA LIBRE Y PERSONALIZADA -->
+        <section id="calculadora" class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+            <div class="border-b border-slate-100 dark:border-slate-700 pb-4">
+                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider"><i class="fa-solid fa-calculator"></i> Herramienta Universal</span>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">Calculadora Libre de Integración Numérica</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Ingrese sus propios datos tabulados o una función matemática para resolver mediante Trapecio, Simpson 1/3 y Simpson 3/8.</p>
+            </div>
+
+            <!-- Input Selection Mode -->
+            <div class="flex space-x-4 border-b border-slate-200 dark:border-slate-700 pb-3">
+                <label class="inline-flex items-center gap-2 cursor-pointer text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    <input type="radio" name="calcMode" value="table" checked onchange="toggleCalcInputMode()" class="text-indigo-600 focus:ring-indigo-500">
+                    <span>Datos Tabulados $(x, y)$</span>
+                </label>
+                <label class="inline-flex items-center gap-2 cursor-pointer text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    <input type="radio" name="calcMode" value="function" onchange="toggleCalcInputMode()" class="text-indigo-600 focus:ring-indigo-500">
+                    <span>Función Matemática $f(x)$</span>
+                </label>
+            </div>
+
+            <!-- Mode 1: Tabulated Data Form -->
+            <div id="calcModeTable" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">
+                        Valores de X (separados por coma):
+                    </label>
+                    <input type="text" id="customX" value="0, 1, 2, 3, 4, 5, 6" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">
+                        Valores de Y / f(x) (separados por coma):
+                    </label>
+                    <input type="text" id="customY" value="0, 1, 4, 9, 16, 25, 36" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+            </div>
+
+            <!-- Mode 2: Math Function Form -->
+            <div id="calcModeFunction" class="grid grid-cols-1 md:grid-cols-4 gap-4 hidden">
+                <div class="md:col-span-2 space-y-2">
+                    <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">
+                        Expresión f(x) (Ej: x^2 + cos(x)):
+                    </label>
+                    <input type="text" id="customFx" value="x^2" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">Límite a (Inicio):</label>
+                    <input type="number" id="customA" value="0" step="any" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">Límite b (Fin):</label>
+                    <input type="number" id="customB" value="2" step="any" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div class="space-y-2 md:col-span-2">
+                    <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">Número de subintervalos (n):</label>
+                    <input type="number" id="customN" value="6" min="1" max="100" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+            </div>
+
+            <!-- Action Button & Error Box -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                <button onclick="calculateCustomIntegration()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-lg shadow-indigo-500/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> Calcular Integración
+                </button>
+                <div id="calcErrorMsg" class="hidden text-xs text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 p-3 rounded-xl flex-1">
+                    <!-- Error messages injected here -->
+                </div>
+            </div>
+
+            <!-- Calculation Output Display -->
+            <div id="calcResultsBox" class="hidden space-y-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="customCardsContainer">
+                    <!-- Cards injected dynamically -->
+                </div>
+
+                <!-- Custom Table Breakdown & Chart -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-3">Tabla de Nodos y Pesos</h4>
+                        <div class="overflow-x-auto max-h-60">
+                            <table class="w-full text-xs text-left">
+                                <thead class="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 sticky top-0">
+                                    <tr>
+                                        <th class="p-2">i</th>
+                                        <th class="p-2">xᵢ</th>
+                                        <th class="p-2">f(xᵢ)</th>
+                                        <th class="p-2">W_Trap</th>
+                                        <th class="p-2">W_S1/3</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customNodeTableBody" class="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
+                                    <!-- Injected JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SVG Chart Container -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-2">Representación Gráfica del Área</h4>
+                        <div id="customSvgChart" class="w-full h-48 flex items-center justify-center">
+                            <!-- SVG Rendered Here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. INFORME TÉCNICO & MATRIZ RESUMEN -->
+        <section id="informe" class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 space-y-8">
+            <div class="border-b border-slate-100 dark:border-slate-700 pb-4">
+                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider"><i class="fa-solid fa-file-contract"></i> Entregable Final</span>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">Informe Técnico y Matriz de Resultados</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Resumen consolidado de todos los ejercicios del solucionario, comparando métodos de integración y valores analíticos de referencia.</p>
+            </div>
+
+            <!-- Consolidated Results Table -->
+            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                <table class="w-full text-xs text-left border-collapse">
+                    <thead class="bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-bold uppercase tracking-wider">
+                        <tr>
+                            <th class="p-3 border-b border-slate-200 dark:border-slate-700">Ejercicios</th>
+                            <th class="p-3 border-b border-slate-200 dark:border-slate-700">Trapecio Compuesto</th>
+                            <th class="p-3 border-b border-slate-200 dark:border-slate-700">Simpson / Referencia Exacta</th>
+                            <th class="p-3 border-b border-slate-200 dark:border-slate-700">Unidades</th>
+                            <th class="p-3 border-b border-slate-200 dark:border-slate-700">Error Relativo / Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-700 font-mono text-slate-700 dark:text-slate-300">
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">19. Vehículo</td>
+                            <td class="p-3">0.147083</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">0.147072 (Combinado)</td>
+                            <td class="p-3">mi (~236.69 m)</td>
+                            <td class="p-3 font-sans text-[11px]">Subintervalos impar (7). Requiere combinar S1/3 + S3/8.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">20. Banda Elástica</td>
+                            <td class="p-3">4.544000</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">4.577167 (Combinado)</td>
+                            <td class="p-3">lb·in (~0.517 J)</td>
+                            <td class="p-3 font-sans text-[11px]">7 subintervalos. Simpson captura la curvatura no lineal de tensión.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">21. Perfil Topográfico</td>
+                            <td class="p-3">36.400000</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">36.850000 (S1/3 + Trap)</td>
+                            <td class="p-3">u²</td>
+                            <td class="p-3 font-sans text-[11px]">9 subintervalos digitalizados visualmente.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">22. Cable Catenaria</td>
+                            <td class="p-3">44.042044</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">43.899213 (Exacto: 43.898841)</td>
+                            <td class="p-3">ft</td>
+                            <td class="p-3 font-sans text-[11px]">Simpson 1/3 logra un error &lt; 0.001% con $n=8$.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">23. Caudal Agua</td>
+                            <td class="p-3">11.681778</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">12.151244 (Exacto: 12.828170)</td>
+                            <td class="p-3">in³/s</td>
+                            <td class="p-3 font-sans text-[11px]">Lenta convergencia por derivada infinita en la pared ($r=R$).</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">24. Cardioide Paramétrica</td>
+                            <td class="p-3">78.969264</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">80.010767 (Exacto: 80.000000)</td>
+                            <td class="p-3">unidades de longitud</td>
+                            <td class="p-3 font-sans text-[11px]">Perímetro completo de la cardioide con $b=5$.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">25. Energía Satélite</td>
+                            <td class="p-3">3.486620e+9</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">3.486237e+9 (Exacto: 3.486237e+9)</td>
+                            <td class="p-3">Joules (J)</td>
+                            <td class="p-3 font-sans text-[11px]">Trabajo gravitacional a $800\text{ km}$ de altitud.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">26. Superficie Lago Erie</td>
+                            <td class="p-3">Depende de anchuras</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">Ref: 9,940 mi²</td>
+                            <td class="p-3">mi²</td>
+                            <td class="p-3 font-sans text-[11px]">Permite adaptar la metodología a la cuenca del Titicaca.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-3 font-semibold font-sans">27. Volumen Balón</td>
+                            <td class="p-3">199.404740</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400">201.842092 (S1/3)</td>
+                            <td class="p-3">in³</td>
+                            <td class="p-3 font-sans text-[11px]">Superficie $S=2\pi\int r dz \approx 162.31\text{ in}^2$ omite $r'$.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Conclusions Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                <div class="bg-indigo-50 dark:bg-indigo-950/30 p-5 rounded-2xl border border-indigo-100 dark:border-indigo-900/50 space-y-3">
+                    <h4 class="font-bold text-sm text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-amber-500"></i> Conclusiones Métricas y Comparativas
+                    </h4>
+                    <p class="text-xs text-indigo-950/80 dark:text-indigo-300/80 leading-relaxed">
+                        El método de <strong>Simpson 1/3</strong> demuestra una superioridad cuadrática sobre el Trapecio para funciones suaves debido a la aproximación por parábolas de segundo orden. Sin embargo, en casos con discontinuidades en la derivada (como la velocidad turbulenta cerca de la pared de la tubería en el Ejercicio 23), la tasa de convergencia decrece, requiriendo un mayor número de subdivisiones.
+                    </p>
+                </div>
+                <div class="bg-slate-100 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-map-pin text-indigo-500"></i> Contexto e Interpretación para La Paz
+                    </h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Estas técnicas de integración son fundamentales para el cálculo de volumen de embalses en la cordillera, estimación del caudal en tuberías de agua potable y la modelación geométrica de infraestructuras de transporte urbano en topografías complejas como la cuenca de La Paz.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
+            <p>Desafío Grupal de Métodos Numéricos · Integración Numérica Aplicada · La Paz, Bolivia</p>
+            <p class="text-[11px]">Desarrollado con HTML5, Tailwind CSS y JavaScript Vainilla. Generación dinámica de gráficos mediante SVG interactivo.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ==========================================
+        // 1. DATASETS & EXERCISE DEFINITIONS
+        // ==========================================
+        const EXERCISES_DATA = {
+            19: {
+                title: "Ejercicio 19 · Transporte Urbano: Distancia de Vehículo",
+                subtitle: "Integración de velocidad tabulada v(t) durante los primeros 7 segundos",
+                xName: "Tiempo t (s)",
+                yName: "Velocidad v (mi/h)",
+                xValues: [0, 1, 2, 3, 4, 5, 6, 7],
+                yValues: [0, 14, 39, 69, 95, 114, 129, 139],
+                unitX: "s",
+                unitY: "mi/h",
+                unitResult: "millas",
+                scaleFactor: 1 / 3600, // Converts mi/h * s to miles
+                scaleUnitName: "Millas (mi)",
+                extraUnitName: "Metros (m)",
+                extraScale: 1609.344,
+                solTrapezoid: 0.147083,
+                solSimpson: 0.147072, // Combined S1/3 (0-4) + S3/8 (4-7)
+                isCombined: true,
+                description: "La distancia recorrida es d = ∫ v(t) dt. Dado que n=7 (impar), Simpson requiere combinar Simpson 1/3 para los primeros 4 subintervalos y Simpson 3/8 para los últimos 3 subintervalos."
+            },
+            20: {
+                title: "Ejercicio 20 · Ensayo de Elasticidad: Banda Elástica",
+                subtitle: "Cálculo del trabajo W = ∫ F(x) dx realizado al deformar la banda",
+                xName: "Desplazamiento x (in)",
+                yName: "Fuerza F (lb)",
+                xValues: [0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8],
+                yValues: [0, 0.85, 1.30, 1.60, 1.87, 2.14, 2.34, 2.52],
+                unitX: "in",
+                unitY: "lb",
+                unitResult: "lb·in",
+                scaleFactor: 1,
+                scaleUnitName: "lb·in",
+                extraUnitName: "Joules (J)",
+                extraScale: 0.112984825,
+                solTrapezoid: 4.544000,
+                solSimpson: 4.577167,
+                isCombined: true,
+                description: "El trabajo es el área bajo la curva de fuerza vs desplazamiento. Con 7 subintervalos iguales (h=0.4 in), se aplica Simpson combinado."
+            },
+            21: {
+                title: "Ejercicio 21 · Perfil Topográfico",
+                subtitle: "Área bajo la curva del perfil digitalizado entre x=1 y x=10",
+                xName: "Posición x",
+                yName: "Altura y",
+                xValues: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                yValues: [1.3, 3.7, 4.6, 4.4, 2.7, 2.5, 3.6, 5.3, 6.0, 5.9],
+                unitX: "u",
+                unitY: "u",
+                unitResult: "u²",
+                scaleFactor: 1,
+                scaleUnitName: "u²",
+                solTrapezoid: 36.400000,
+                solSimpson: 36.850000,
+                isCombined: true,
+                description: "Representación topográfica digitalizada. Se utiliza Simpson 1/3 para los primeros 8 subintervalos y la regla del Trapecio para el último intervalo."
+            },
+            22: {
+                title: "Ejercicio 22 · Cable Suspendido (Catenaria)",
+                subtitle: "Longitud del cable y = a·cosh(x/a) con a=24 ft entre x=-12 ft y x=26 ft",
+                type: "function",
+                fxText: "cosh(x/24)",
+                a: -12,
+                b: 26,
+                n: 8,
+                unitResult: "ft",
+                exactVal: 43.898841,
+                solTrapezoid: 44.042044,
+                solSimpson: 43.899213,
+                evalFx: (x) => Math.cosh(x / 24),
+                description: "Integral de longitud de arco L = ∫ √[1 + (y')²] dx = ∫ cosh(x/24) dx. Valor exacto analítico: 24·[sinh(26/24) - sinh(-12/24)] = 43.898841 ft."
+            },
+            23: {
+                title: "Ejercicio 23 · Red de Agua: Caudal Turbulento",
+                subtitle: "Caudal Q = ∫ 2π·r·v(r) dr en tubería circular con R = 0.25 in",
+                type: "function",
+                fxText: "160 * pi * r * (1 - r/0.25)^(1/7)",
+                a: 0,
+                b: 0.25,
+                n: 8,
+                unitResult: "in³/s",
+                exactVal: 12.828170, // 49 * pi / 12
+                solTrapezoid: 11.681778,
+                solSimpson: 12.151244,
+                evalFx: (r) => {
+                    if (r >= 0.25) return 0;
+                    return 160 * Math.PI * r * Math.pow(1 - r / 0.25, 1 / 7);
+                },
+                description: "Perfil de velocidad turbulenta v(r) = 80(1 - r/R)^(1/7). La derivada tiende a infinito en la pared (r=R), ralentizando la convergencia numérica."
+            },
+            24: {
+                title: "Ejercicio 24 · Cardioide Paramétrica",
+                subtitle: "Longitud de la cardioide con b=5 para t ∈ [0, 2π]",
+                type: "function",
+                fxText: "20 * sin(t / 2)",
+                a: 0,
+                b: 2 * Math.PI,
+                n: 8,
+                unitResult: "unidades",
+                exactVal: 80.000000,
+                solTrapezoid: 78.969264,
+                solSimpson: 80.010767,
+                evalFx: (t) => 20 * Math.sin(t / 2),
+                isCardioidPlot: true,
+                paramB: 5,
+                description: "Ecuaciones x(t) = 2b·cos(t) - b·cos(2t), y(t) = 2b·sin(t) - b·sin(2t). El elemento de arco Simplificado resulta en L = ∫ 20·sin(t/2) dt = 80."
+            },
+            25: {
+                title: "Ejercicio 25 · Energía Potencial de Satélite",
+                subtitle: "Cambio de energía ΔU = ∫ m·g(y) dy desde la superficie a h = 800 km",
+                type: "function",
+                fxText: "500 * 9.81 * (6371000)^2 / (6371000 + y)^2",
+                a: 0,
+                b: 800000,
+                n: 8,
+                unitResult: "Joules (J)",
+                exactVal: 3.486236787e9,
+                solTrapezoid: 3.48662008e9,
+                solSimpson: 3.48623690e9,
+                evalFx: (y) => {
+                    const m = 500, g0 = 9.81, R = 6371000;
+                    return m * g0 * (R * R) / Math.pow(R + y, 2);
+                },
+                description: "Variación de la aceleración de la gravedad con la altitud g(y) = g0·R² / (R+y)². Solución analítica exacta ΔU = mg0Rh/(R+h) = 3.486236787×10⁹ J."
+            },
+            26: {
+                title: "Ejercicio 26 · Área del Lago Erie / Titicaca",
+                subtitle: "Estimación del área integrando anchuras w(x) en millas",
+                xName: "Posición x (mi)",
+                yName: "Anchura w(x) (mi)",
+                xValues: [40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260],
+                yValues: [42, 50, 38, 42, 55, 60, 62, 58, 50, 41, 30, 15], // Representative digitalized values
+                unitX: "mi",
+                unitY: "mi",
+                unitResult: "mi²",
+                scaleFactor: 1,
+                scaleUnitName: "Millas cuadradas (mi²)",
+                solTrapezoid: 10110.0,
+                solSimpson: 10186.67,
+                referenceArea: 9940.0,
+                description: "Mediciones de anchura cada 20 millas (n=11 subintervalos). Área de referencia oficial del Lago Erie: 9,940 mi²."
+            },
+            27: {
+                title: "Ejercicio 27 · Geometría de un Balón: Volumen y Superficie",
+                subtitle: "Integración de volumen V = π ∫ r² dz y superficie aproximada S = 2π ∫ r dz",
+                xName: "Posición z (in)",
+                yName: "Diámetro d (in)",
+                xValues: [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0],
+                yValues: [0, 2.6, 3.2, 4.8, 5.6, 6.0, 6.2, 6.0, 5.6, 4.8, 3.3, 2.6, 0],
+                unitX: "in",
+                unitY: "in",
+                unitResult: "in³",
+                scaleFactor: 1,
+                solTrapezoid: 199.404740,
+                solSimpson: 201.842092,
+                isBalon: true,
+                description: "Para el volumen V = π ∫ (d/2)² dz, con n=12 (par), Simpson 1/3 da 201.84 in³. La fórmula reducida de área S = 2π ∫ r dz resulta en ~162.32 in² (omite la pendiente r')."
+            }
+        };
+
+        // Current active exercise tab
+        let currentExId = 19;
+
+        // ==========================================
+        // 2. INTEGRATION CORE ALGORITHMS
+        // ==========================================
+
+        /**
+         * Trapezoidal Rule for Array Data
+         */
+        function trapz(x, y) {
+            let sum = 0;
+            for (let i = 0; i < x.length - 1; i++) {
+                const h = x[i + 1] - x[i];
+                sum += (h / 2) * (y[i] + y[i + 1]);
+            }
+            return sum;
+        }
+
+        /**
+         * Simpson 1/3 Rule for Array Data (Requires even number of intervals, i.e., odd number of points)
+         */
+        function simpson13(x, y) {
+            const n = x.length - 1;
+            if (n % 2 !== 0) throw new Error("Simpson 1/3 requiere un número PAR de subintervalos (n debe ser par).");
+            const h = (x[n] - x[0]) / n;
+            let sum = y[0] + y[n];
+            for (let i = 1; i < n; i++) {
+                sum += (i % 2 === 1) ? 4 * y[i] : 2 * y[i];
+            }
+            return (h / 3) * sum;
+        }
+
+        /**
+         * Simpson 3/8 Rule for Array Data (Requires n multiple of 3)
+         */
+        function simpson38(x, y) {
+            const n = x.length - 1;
+            if (n % 3 !== 0) throw new Error("Simpson 3/8 requiere un número de subintervalos MÚLTIPLO DE 3.");
+            const h = (x[n] - x[0]) / n;
+            let sum = y[0] + y[n];
+            for (let i = 1; i < n; i++) {
+                sum += (i % 3 === 0) ? 2 * y[i] : 3 * y[i];
+            }
+            return (3 * h / 8) * sum;
+        }
+
+        /**
+         * Combined Simpson (S1/3 for 4 intervals + S3/8 for 3 intervals = 7 intervals)
+         */
+        function simpsonCombined7(x, y) {
+            // S1/3 from index 0 to 4 (4 intervals)
+            const x1 = x.slice(0, 5);
+            const y1 = y.slice(0, 5);
+            const s13 = simpson13(x1, y1);
+
+            // S3/8 from index 4 to 7 (3 intervals)
+            const x2 = x.slice(4, 8);
+            const y2 = y.slice(4, 8);
+            const s38 = simpson38(x2, y2);
+
+            return s13 + s38;
+        }
+
+        // ==========================================
+        // 3. UI INITIALIZATION & EVENT HANDLERS
+        // ==========================================
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initThemeToggle();
+            renderValidationSection(4);
+            switchExTab(19);
+        });
+
+        function initThemeToggle() {
+            const themeBtn = document.getElementById("themeToggle");
+            themeBtn.addEventListener("click", () => {
+                document.documentElement.classList.toggle("dark");
+            });
+        }
+
+        // ==========================================
+        // 4. VALIDATION SECTION (f(x) = x^2)
+        // ==========================================
+
+        let currentValN = 4;
+
+        function setValidationN(n) {
+            currentValN = n;
+            document.getElementById("valBtn4").className = n === 4 
+                ? "px-4 py-1.5 rounded-lg text-xs font-semibold transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm"
+                : "px-4 py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            document.getElementById("valBtn8").className = n === 8 
+                ? "px-4 py-1.5 rounded-lg text-xs font-semibold transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm"
+                : "px-4 py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+
+            renderValidationSection(n);
+        }
+
+        function renderValidationSection(n) {
+            const exact = 8 / 3; // 2.6666666666666665
+            const a = 0, b = 2;
+            const h = (b - a) / n;
+            const x = [], y = [];
+            for (let i = 0; i <= n; i++) {
+                const xi = a + i * h;
+                x.push(xi);
+                y.push(xi * xi);
+            }
+
+            const valTrap = trapz(x, y);
+            const valS13 = simpson13(x, y);
+            let valS38 = null, err38 = null, pct38 = null;
+
+            if (n % 3 === 0) {
+                valS38 = simpson38(x, y);
+                err38 = Math.abs(exact - valS38);
+                pct38 = (err38 / exact) * 100;
+            }
+
+            const errTrap = Math.abs(exact - valTrap);
+            const pctTrap = (errTrap / exact) * 100;
+
+            const errS13 = Math.abs(exact - valS13);
+            const pctS13 = (errS13 / exact) * 100;
+
+            const container = document.getElementById("validationResultsGrid");
+            container.innerHTML = `
+                <!-- Trapezoid Card -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 uppercase">Trapecio Compuesto</span>
+                        <div class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white mt-1">${valTrap.toFixed(6)}</div>
+                        <p class="text-xs text-slate-500 mt-1">Exacto: ${exact.toFixed(6)}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs space-y-1">
+                        <div class="flex justify-between"><span class="text-slate-500">Error Absoluto:</span> <span class="font-mono text-rose-500 font-semibold">${errTrap.toFixed(6)}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Error Relativo:</span> <span class="font-mono text-rose-500 font-semibold">${pctTrap.toFixed(4)}%</span></div>
+                    </div>
+                </div>
+
+                <!-- Simpson 1/3 Card -->
+                <div class="p-4 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">Simpson 1/3</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-bold">Exacto para cuadráticas</span>
+                        </div>
+                        <div class="text-2xl font-extrabold font-mono text-indigo-900 dark:text-indigo-200 mt-1">${valS13.toFixed(6)}</div>
+                        <p class="text-xs text-indigo-600/70 dark:text-indigo-300/70 mt-1">Exacto: ${exact.toFixed(6)}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-indigo-200 dark:border-indigo-900 text-xs space-y-1">
+                        <div class="flex justify-between"><span class="text-indigo-700/70 dark:text-indigo-300/70">Error Absoluto:</span> <span class="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">${errS13.toFixed(8)}</span></div>
+                        <div class="flex justify-between"><span class="text-indigo-700/70 dark:text-indigo-300/70">Error Relativo:</span> <span class="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">${pctS13.toFixed(6)}%</span></div>
+                    </div>
+                </div>
+
+                <!-- Simpson 3/8 Card -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 uppercase">Simpson 3/8</span>
+                        ${valS38 !== null 
+                            ? `<div class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white mt-1">${valS38.toFixed(6)}</div>`
+                            : `<div class="text-sm font-semibold text-amber-600 dark:text-amber-400 mt-2">No aplicable para n=${n} (n debe ser múltiplo de 3)</div>`
+                        }
+                    </div>
+                    ${valS38 !== null ? `
+                    <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs space-y-1">
+                        <div class="flex justify-between"><span class="text-slate-500">Error Absoluto:</span> <span class="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">${err38.toFixed(8)}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Error Relativo:</span> <span class="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">${pct38.toFixed(6)}%</span></div>
+                    </div>` : '<div class="text-[11px] text-slate-400 mt-4">Pruebe n=6 o n=12 en la calculadora libre para activar Simpson 3/8.</div>'}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 5. EXERCISE TABS & INTERACTIVE SOLVER
+        // ==========================================
+
+        function switchExTab(exId) {
+            currentExId = exId;
+            document.querySelectorAll(".ex-tab-btn").forEach(btn => {
+                btn.className = "ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700";
+            });
+            const activeBtn = document.getElementById(`exTab${exId}`);
+            if (activeBtn) {
+                activeBtn.className = "ex-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-indigo-600 text-white shadow-md shadow-indigo-500/20";
+            }
+            renderExercisePanel(exId);
+        }
+
+        function renderExercisePanel(exId) {
+            const data = EXERCISES_DATA[exId];
+            const panel = document.getElementById("exercisePanel");
+
+            if (data.type === "function") {
+                renderFunctionExercise(data, panel);
+            } else {
+                renderTabulatedExercise(data, panel);
+            }
+        }
+
+        /**
+         * Render Function-based exercises (22, 23, 24, 25)
+         */
+        function renderFunctionExercise(data, panel) {
+            const n = data.n;
+            const a = data.a;
+            const b = data.b;
+            const h = (b - a) / n;
+
+            const xVals = [], yVals = [];
+            for (let i = 0; i <= n; i++) {
+                const xi = a + i * h;
+                xVals.push(xi);
+                yVals.push(data.evalFx(xi));
+            }
+
+            const valTrap = trapz(xVals, yVals);
+            const valS13 = simpson13(xVals, yVals);
+            const exact = data.exactVal;
+
+            const errTrap = Math.abs(exact - valTrap);
+            const errS13 = Math.abs(exact - valS13);
+
+            panel.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">Solucionario de Función Matemática</span>
+                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">${data.title}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${data.subtitle}</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i> ${data.description}
+                    </div>
+
+                    <!-- Parameter Adjuster -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-slate-500">Límite a:</span>
+                            <div class="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">${a}</div>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-slate-500">Límite b:</span>
+                            <div class="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">${typeof b === 'number' && b > 1000 ? b.toExponential(2) : (Math.round(b * 1000) / 1000)}</div>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-slate-500">Subintervalos (n):</span>
+                            <div class="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">${n}</div>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-slate-500">Paso h:</span>
+                            <div class="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">${h > 1000 ? h.toExponential(2) : h.toFixed(4)}</div>
+                        </div>
+                    </div>
+
+                    <!-- Results Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Trapecio Compuesto</span>
+                            <div class="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">${valTrap > 1e6 ? valTrap.toExponential(6) : valTrap.toFixed(6)}</div>
+                            <p class="text-[11px] text-slate-500 mt-2">Error Absoluto: <span class="font-mono text-rose-500">${errTrap > 1e6 ? errTrap.toExponential(4) : errTrap.toFixed(6)}</span></p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 shadow-sm">
+                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">Simpson 1/3 (n=${n})</span>
+                            <div class="text-xl font-bold font-mono text-indigo-900 dark:text-indigo-200 mt-1">${valS13 > 1e6 ? valS13.toExponential(6) : valS13.toFixed(6)}</div>
+                            <p class="text-[11px] text-indigo-600/80 dark:text-indigo-300/80 mt-2">Error Absoluto: <span class="font-mono text-emerald-600 dark:text-emerald-400 font-bold">${errS13 > 1e6 ? errS13.toExponential(4) : errS13.toFixed(6)}</span></p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 shadow-sm">
+                            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase">Valor Analítico Exacto</span>
+                            <div class="text-xl font-bold font-mono text-emerald-900 dark:text-emerald-200 mt-1">${exact > 1e6 ? exact.toExponential(6) : exact.toFixed(6)}</div>
+                            <p class="text-[11px] text-emerald-700/80 dark:text-emerald-300/80 mt-2">Referencia Solucionario</p>
+                        </div>
+                    </div>
+
+                    ${data.isCardioidPlot ? renderCardioidCanvas(data.paramB) : ''}
+                </div>
+            `;
+        }
+
+        /**
+         * Render Tabulated-based exercises (19, 20, 21, 26, 27)
+         */
+        function renderTabulatedExercise(data, panel) {
+            let xVals = [...data.xValues];
+            let yVals = [...data.yValues];
+
+            // Re-evaluate trapezoid and simpson based on array
+            let valTrap = trapz(xVals, yVals) * (data.scaleFactor || 1);
+            let valSimp = 0;
+
+            if (data.isCombined) {
+                if (currentExId === 19 || currentExId === 20) {
+                    valSimp = simpsonCombined7(xVals, yVals) * (data.scaleFactor || 1);
+                } else if (currentExId === 21) {
+                    // 8 intervals S1/3 + 1 Trap
+                    const s8 = simpson13(xVals.slice(0, 9), yVals.slice(0, 9));
+                    const t1 = trapz(xVals.slice(8, 10), yVals.slice(8, 10));
+                    valSimp = s8 + t1;
+                }
+            } else {
+                try {
+                    valSimp = simpson13(xVals, yVals) * (data.scaleFactor || 1);
+                } catch (e) {
+                    valSimp = valTrap; // Fallback
+                }
+            }
+
+            let extraUnitHTML = "";
+            if (data.extraUnitName && data.extraScale) {
+                const extraVal = valSimp * data.extraScale;
+                extraUnitHTML = `
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 text-xs">
+                        <span class="text-slate-500 block">Equivalencia en ${data.extraUnitName}:</span>
+                        <span class="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm">${extraVal.toFixed(4)} ${data.extraUnitName}</span>
+                    </div>
+                `;
+            }
+
+            panel.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">Solucionario de Datos Tabulados</span>
+                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">${data.title}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${data.subtitle}</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i> ${data.description}
+                    </div>
+
+                    <!-- Editable Data Table -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold uppercase text-slate-700 dark:text-slate-300">Tabla de Datos de Entrada (Editable)</h4>
+                            <button onclick="resetExerciseData(${currentExId})" class="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline">
+                                <i class="fa-solid fa-rotate-left"></i> Restablecer Valores
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                            <table class="w-full text-xs text-center">
+                                <thead class="bg-slate-100 dark:bg-slate-900 font-bold text-slate-700 dark:text-slate-300">
+                                    <tr>
+                                        <th class="p-2 border-r border-slate-200 dark:border-slate-700">${data.xName}</th>
+                                        ${xVals.map((v, idx) => `<td class="p-2 border-r border-slate-200 dark:border-slate-700"><input type="number" step="any" value="${v}" onchange="updateTabulatedCell(${currentExId}, 'x', ${idx}, this.value)" class="w-14 text-center bg-white dark:bg-slate-800 border rounded px-1 font-mono"></td>`).join("")}
+                                    </tr>
+                                    <tr>
+                                        <th class="p-2 border-r border-slate-200 dark:border-slate-700">${data.yName}</th>
+                                        ${yVals.map((v, idx) => `<td class="p-2 border-r border-slate-200 dark:border-slate-700"><input type="number" step="any" value="${v}" onchange="updateTabulatedCell(${currentExId}, 'y', ${idx}, this.value)" class="w-14 text-center bg-white dark:bg-slate-800 border rounded px-1 font-mono"></td>`).join("")}
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Computed Results Card Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Trapecio Compuesto</span>
+                            <div class="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">${valTrap.toFixed(6)}</div>
+                            <p class="text-[11px] text-slate-500 mt-1">${data.scaleUnitName || data.unitResult}</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 shadow-sm">
+                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">
+                                ${data.isCombined ? 'Simpson Combinado' : 'Simpson 1/3'}
+                            </span>
+                            <div class="text-xl font-bold font-mono text-indigo-900 dark:text-indigo-200 mt-1">${valSimp.toFixed(6)}</div>
+                            <p class="text-[11px] text-indigo-600/80 dark:text-indigo-300/80 mt-1">${data.scaleUnitName || data.unitResult}</p>
+                        </div>
+                        ${extraUnitHTML ? extraUnitHTML : `
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Subintervalos totales (n)</span>
+                            <div class="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1">${xVals.length - 1}</div>
+                            <p class="text-[11px] text-slate-500 mt-1">Paso promedio h = ${((xVals[xVals.length-1] - xVals[0]) / (xVals.length - 1)).toFixed(4)}</p>
+                        </div>
+                        `}
+                    </div>
+
+                    <!-- Plot representation -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase">Visualización del Perfil</h4>
+                        <div id="exTabChartSvg" class="w-full h-44 flex items-center justify-center">
+                            ${renderSvgAreaChart(xVals, yVals)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateTabulatedCell(exId, type, idx, val) {
+            const num = parseFloat(val) || 0;
+            if (type === 'x') EXERCISES_DATA[exId].xValues[idx] = num;
+            if (type === 'y') EXERCISES_DATA[exId].yValues[idx] = num;
+            renderExercisePanel(exId);
+        }
+
+        function resetExerciseData(exId) {
+            // Reload default
+            location.reload();
+        }
+
+        /**
+         * Render SVG cardioid curve for Exercise 24
+         */
+        function renderCardioidCanvas(b) {
+            const points = [];
+            const N = 100;
+            for (let i = 0; i <= N; i++) {
+                const t = (2 * Math.PI * i) / N;
+                const x = 2 * b * Math.cos(t) - b * Math.cos(2 * t);
+                const y = 2 * b * Math.sin(t) - b * Math.sin(2 * t);
+                points.push({ x, y });
+            }
+
+            // Map x, y from [-3b, 3b] to SVG space [0, 300] x [0, 200]
+            const scale = 120 / (3 * b);
+            const cx = 150, cy = 100;
+
+            const pathD = points.map((p, idx) => {
+                const sx = cx + p.x * scale;
+                const sy = cy - p.y * scale;
+                return `${idx === 0 ? 'M' : 'L'} ${sx.toFixed(1)} ${sy.toFixed(1)}`;
+            }).join(" ") + " Z";
+
+            return `
+                <div class="p-4 rounded-xl bg-slate-900 text-white space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-indigo-400 uppercase">Gráfica Interactiva de Cardioide (b=${b})</span>
+                        <span class="text-[10px] text-slate-400 font-mono">x(t), y(t) t ∈ [0, 2π]</span>
+                    </div>
+                    <div class="flex justify-center">
+                        <svg width="300" height="200" class="overflow-visible">
+                            <!-- Ejes Cartesianos -->
+                            <line x1="20" y1="100" x2="280" y2="100" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
+                            <line x1="150" y1="10" x2="150" y2="190" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
+                            <!-- Cardioide Path -->
+                            <path d="${pathD}" fill="rgba(99, 102, 241, 0.2)" stroke="#818cf8" stroke-width="2.5"/>
+                        </svg>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Render SVG Area Plot for Tabulated Data
+         */
+        function renderSvgAreaChart(x, y) {
+            if (!x || x.length < 2) return "";
+
+            const minX = Math.min(...x);
+            const maxX = Math.max(...x);
+            const minY = Math.min(0, Math.min(...y));
+            const maxY = Math.max(...y) || 1;
+
+            const width = 500, height = 150;
+            const padX = 30, padY = 20;
+
+            const mapX = (val) => padX + ((val - minX) / (maxX - minX || 1)) * (width - 2 * padX);
+            const mapY = (val) => height - padY - ((val - minY) / (maxY - minY || 1)) * (height - 2 * padY);
+
+            // Construct Area Polygon
+            let polyPts = `${mapX(x[0])},${mapY(0)} `;
+            for (let i = 0; i < x.length; i++) {
+                polyPts += `${mapX(x[i])},${mapY(y[i])} `;
+            }
+            polyPts += `${mapX(x[x.length - 1])},${mapY(0)}`;
+
+            // Construct Line String
+            const linePts = x.map((xi, idx) => `${mapX(xi)},${mapY(y[idx])}`).join(" ");
+
+            return `
+                <svg viewBox="0 0 ${width} ${height}" class="w-full h-full max-h-44">
+                    <!-- Background Area -->
+                    <polygon points="${polyPts}" fill="rgba(99, 102, 241, 0.15)" />
+                    <!-- Curve Line -->
+                    <polyline points="${linePts}" fill="none" stroke="#6366f1" stroke-width="2.5" />
+                    <!-- Points -->
+                    ${x.map((xi, idx) => `
+                        <circle cx="${mapX(xi)}" cy="${mapY(y[idx])}" r="3.5" fill="#4338ca" />
+                    `).join("")}
+                    <!-- Baseline -->
+                    <line x1="${padX}" y1="${mapY(0)}" x2="${width - padX}" y2="${mapY(0)}" stroke="#94a3b8" stroke-width="1"/>
+                </svg>
+            `;
+        }
+
+        // ==========================================
+        // 6. CUSTOM UNIVERSAL CALCULATOR
+        // ==========================================
+
+        function toggleCalcInputMode() {
+            const mode = document.querySelector('input[name="calcMode"]:checked').value;
+            if (mode === 'table') {
+                document.getElementById("calcModeTable").classList.remove("hidden");
+                document.getElementById("calcModeFunction").classList.add("hidden");
+            } else {
+                document.getElementById("calcModeTable").classList.add("hidden");
+                document.getElementById("calcModeFunction").classList.remove("hidden");
+            }
+        }
+
+        function calculateCustomIntegration() {
+            const mode = document.querySelector('input[name="calcMode"]:checked').value;
+            const errBox = document.getElementById("calcErrorMsg");
+            const resBox = document.getElementById("calcResultsBox");
+            errBox.classList.add("hidden");
+            resBox.classList.add("hidden");
+
+            let x = [], y = [];
+
+            if (mode === 'table') {
+                const strX = document.getElementById("customX").value;
+                const strY = document.getElementById("customY").value;
+
+                x = strX.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+                y = strY.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+
+                if (x.length < 2 || y.length < 2) {
+                    showCalcError("Debe ingresar al menos 2 datos numéricos válidos en X e Y.");
+                    return;
+                }
+                if (x.length !== y.length) {
+                    showCalcError(`Las listas tienen dimensiones distintas: X tiene ${x.length} elementos e Y tiene ${y.length}.`);
+                    return;
+                }
+
+                // Verify strictly increasing x
+                for (let i = 0; i < x.length - 1; i++) {
+                    if (x[i + 1] <= x[i]) {
+                        showCalcError(`Los valores de X deben ser estrictamente crecientes. Error en x[${i}] = ${x[i]} y x[${i+1}] = ${x[i+1]}.`);
+                        return;
+                    }
+                }
+            } else {
+                // Function mode
+                const fxStr = document.getElementById("customFx").value;
+                const a = parseFloat(document.getElementById("customA").value);
+                const b = parseFloat(document.getElementById("customB").value);
+                const n = parseInt(document.getElementById("customN").value);
+
+                if (isNaN(a) || isNaN(b) || isNaN(n) || n <= 0) {
+                    showCalcError("Verifique los límites (a, b) y asegúrese de que n sea un número entero positivo.");
+                    return;
+                }
+                if (b <= a) {
+                    showCalcError("El límite superior (b) debe ser mayor que el límite inferior (a).");
+                    return;
+                }
+
+                const h = (b - a) / n;
+                // Parse simple math expressions
+                const evalMath = (valX) => {
+                    try {
+                        let expr = fxStr
+                            .replace(/x/g, `(${valX})`)
+                            .replace(/\^/g, "**")
+                            .replace(/sin/g, "Math.sin")
+                            .replace(/cos/g, "Math.cos")
+                            .replace(/tan/g, "Math.tan")
+                            .replace(/sqrt/g, "Math.sqrt")
+                            .replace(/exp/g, "Math.exp")
+                            .replace(/pi/g, "Math.PI");
+                        return eval(expr);
+                    } catch (e) {
+                        return NaN;
+                    }
+                };
+
+                for (let i = 0; i <= n; i++) {
+                    const xi = a + i * h;
+                    const yi = evalMath(xi);
+                    if (isNaN(yi)) {
+                        showCalcError(`Error al evaluar f(x) en x = ${xi}. Verifique la expresión matemática.`);
+                        return;
+                    }
+                    x.push(xi);
+                    y.push(yi);
+                }
+            }
+
+            // Perform calculations
+            const n = x.length - 1;
+            const valTrap = trapz(x, y);
+
+            let valS13 = null, errS13Text = null;
+            if (n % 2 === 0) {
+                valS13 = simpson13(x, y);
+            } else {
+                errS13Text = "No aplicable (n no es PAR)";
+            }
+
+            let valS38 = null, errS38Text = null;
+            if (n % 3 === 0) {
+                valS38 = simpson38(x, y);
+            } else {
+                errS38Text = "No aplicable (n no es múltiplo de 3)";
+            }
+
+            // Render Output
+            resBox.classList.remove("hidden");
+            const cardsContainer = document.getElementById("customCardsContainer");
+            cardsContainer.innerHTML = `
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Trapecio Compuesto</span>
+                    <div class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">${valTrap.toFixed(6)}</div>
+                    <p class="text-[11px] text-slate-500 mt-1">n = ${n} subintervalos</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900">
+                    <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">Simpson 1/3</span>
+                    ${valS13 !== null 
+                        ? `<div class="text-2xl font-bold font-mono text-indigo-900 dark:text-indigo-200 mt-1">${valS13.toFixed(6)}</div>`
+                        : `<div class="text-xs font-bold text-amber-600 dark:text-amber-400 mt-2">${errS13Text}</div>`
+                    }
+                </div>
+
+                <div class="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900">
+                    <span class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase">Simpson 3/8</span>
+                    ${valS38 !== null 
+                        ? `<div class="text-2xl font-bold font-mono text-purple-900 dark:text-purple-200 mt-1">${valS38.toFixed(6)}</div>`
+                        : `<div class="text-xs font-bold text-amber-600 dark:text-amber-400 mt-2">${errS38Text}</div>`
+                    }
+                </div>
+            `;
+
+            // Populate Node Table
+            const tableBody = document.getElementById("customNodeTableBody");
+            tableBody.innerHTML = x.map((xi, i) => {
+                let wTrap = (i === 0 || i === n) ? 1 : 2;
+                let wS13 = "-";
+                if (n % 2 === 0) {
+                    wS13 = (i === 0 || i === n) ? 1 : ((i % 2 === 1) ? 4 : 2);
+                }
+                return `
+                    <tr class="hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <td class="p-2">${i}</td>
+                        <td class="p-2">${xi.toFixed(4)}</td>
+                        <td class="p-2">${y[i].toFixed(4)}</td>
+                        <td class="p-2 text-indigo-600 dark:text-indigo-400 font-bold">${wTrap}</td>
+                        <td class="p-2 text-purple-600 dark:text-purple-400 font-bold">${wS13}</td>
+                    </tr>
+                `;
+            }).join("");
+
+            // Render Chart
+            document.getElementById("customSvgChart").innerHTML = renderSvgAreaChart(x, y);
+        }
+
+        function showCalcError(msg) {
+            const errBox = document.getElementById("calcErrorMsg");
+            errBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${msg}`;
+            errBox.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
